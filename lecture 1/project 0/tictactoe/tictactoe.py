@@ -73,18 +73,18 @@ def winner(board):
     """
     # column wise
     for j in range(3):
-        if board[0][j] == board[1][j] == board[2][j]:
+        if board[0][j] == board[1][j] == board[2][j] != EMPTY:
             return board[2][j]
 
     # row wise
     for i in range(3):
-        if board[i][0] == board[i][1] == board[i][2]:
+        if board[i][0] == board[i][1] == board[i][2] != EMPTY:
             return board[i][2]
 
     # diogonal
-    if board[0][0] == board[1][1] == board[2][2]:
+    if board[0][0] == board[1][1] == board[2][2] != EMPTY:
         return board[0][0]
-    if board[0][2] == board[1][1] == board[2][0]:
+    if board[0][2] == board[1][1] == board[2][0] != EMPTY:
         return board[0][2]
 
     return
