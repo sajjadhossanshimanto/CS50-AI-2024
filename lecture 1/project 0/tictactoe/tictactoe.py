@@ -56,6 +56,11 @@ def result(board, action):
     Returns the board that results from making move (i, j) on the board.
     """
     i, j = action
+    if i < 0 or j < 0 or i >= 3 or j >= 3:
+        raise Exception("out of boundery")
+
+    if board[i][j] != EMPTY:
+        raise Exception("cell is not empty")
 
     copy_board = deepcopy(board)
     copy_board[i][j] = player(board)
