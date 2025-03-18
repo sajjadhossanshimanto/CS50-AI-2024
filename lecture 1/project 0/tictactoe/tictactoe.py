@@ -117,6 +117,7 @@ def max_value(board):
         if next_val>v:
             v = next_val
             pos = (i, j)
+            if v==1: break # maximum value that can be achive
     
     return v, pos
 
@@ -132,6 +133,7 @@ def min_value(board):
         if next_val<v:
             v = next_val
             pos = (i, j)
+            if v==-1: break # minimum value that can be achive
 
     return v, pos
 
