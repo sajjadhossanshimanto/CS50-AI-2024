@@ -237,7 +237,7 @@ def model_check(knowledge, query):
             # If knowledge base is true in model, then query must also be true
             if knowledge.evaluate(model):
                 return query.evaluate(model)
-            return True
+            return True # shouldn't i return false
         else:
 
             # Choose one of the remaining unused symbols
@@ -253,7 +253,10 @@ def model_check(knowledge, query):
             model_false[p] = False
 
             # Ensure entailment holds in both models
-            return (check_all(knowledge, query, remaining, model_true) and
+            # in all model where kb in true. q has tobe true. one single false means our kb doesn't entail q
+            # we have returned true where kb is false. just to ignore this combination of model
+            # we are seeking of any false. if any false appear in any model. that's mean does not kb!=qs
+            return (check_all(knowledge, query, remaining, model_true) and # why and here. shouldn't i use or
                     check_all(knowledge, query, remaining, model_false))
 
     # Get all symbols in both knowledge and query
