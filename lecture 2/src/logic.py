@@ -23,7 +23,7 @@ class Sentence():
     @classmethod
     def parenthesize(cls, s):
         """Parenthesizes an expression if not already parenthesized."""
-        def balanced(s):
+        def balanced(s):# why do we need for balance checks? in case where (!rain) ^ (!harry)
             """Checks if a string has balanced parentheses."""
             count = 0
             for c in s:
