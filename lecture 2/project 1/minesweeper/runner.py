@@ -39,7 +39,7 @@ mine = pygame.transform.scale(mine, (cell_size, cell_size))
 
 # Create game and AI agent
 game = Minesweeper(height=HEIGHT, width=WIDTH, mines=MINES)
-ai = MinesweeperAI(height=HEIGHT, width=WIDTH)
+ai = MinesweeperAI(height=HEIGHT, width=WIDTH, game=game)
 
 # Keep track of revealed cells, flagged cells, and if a mine was hit
 revealed = set()
@@ -189,13 +189,13 @@ while True:
                 else:
                     print("No known safe moves, AI making random move.")
             else:
-                print("AI making safe move.")
+                print("AI making safe move.", move)
             time.sleep(0.2)
 
         # Reset game state
         elif resetButton.collidepoint(mouse):
             game = Minesweeper(height=HEIGHT, width=WIDTH, mines=MINES)
-            ai = MinesweeperAI(height=HEIGHT, width=WIDTH)
+            ai = MinesweeperAI(height=HEIGHT, width=WIDTH, game=game)
             revealed = set()
             flags = set()
             lost = False

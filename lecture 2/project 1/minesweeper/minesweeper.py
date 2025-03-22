@@ -147,7 +147,8 @@ class MinesweeperAI():
     Minesweeper game player
     """
 
-    def __init__(self, height=8, width=8):
+    def __init__(self, height=8, width=8, game=None):
+        self.game = game
 
         # Set initial height and width
         self.height = height
