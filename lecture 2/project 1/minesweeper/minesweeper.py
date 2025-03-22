@@ -141,6 +141,12 @@ class Sentence():
         self.cells.remove(cell)
         # self.count-=1
 
+    def issubset(self, other):
+        " return : (bool) is this a subset of other "
+        return self.cells.issubset(other.cells)
+
+    def __sub__(self, other):
+        return self.cells - other.cells
 
 class MinesweeperAI():
     """
@@ -162,7 +168,7 @@ class MinesweeperAI():
         self.safes = set()
 
         # List of sentences about the game known to be true
-        self.knowledge = deque()
+        self.knowledge = []
 
     def mark_mine(self, cell):
         """
