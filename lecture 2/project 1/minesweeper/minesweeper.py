@@ -234,10 +234,11 @@ class MinesweeperAI():
         self.mark_safe(cell)
         self.moves_made.add(cell)
 
+        ini_ln = len(self.knowledge)
         new_sen = Sentence(self.valid_neibers(cell), count)
         self.knowledge.append(new_sen)
         
-        for i in range(len(self.knowledge)-1):# excluding last add
+        for i in range(ini_ln):# excluding last add
             sentence = self.knowledge[i]
             if len(new_sen.cells)>len(sentence.cells):
                 set1, set2 = new_sen.cells, sentence.cells
@@ -247,12 +248,10 @@ class MinesweeperAI():
             if set2.issubset(set1):
                 self.knowledge.append(Sentence(set1.difference(set2), abs(new_sen.count-sentence.count)))
 
-        for _ in range(len(self.knowledge)):
-            sentence = self.knowledge.popleft()
-            self.safes.update(sentence.safes)
-            self.mines.update(sentence.mines)
-            if sentence.cells:
-                self.knowledge.append(sentence)
+        for i in range(ini_ln, len(self.knowledge)):
+            sentence = self.knowledge[i]
+            self.safes.update(sentence.known_safes())
+            self.mines.update(sentence.known_mines())
         
         return
 
