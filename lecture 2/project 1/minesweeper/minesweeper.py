@@ -117,7 +117,7 @@ class Sentence():
         Returns the set of all cells in self.cells known to be safe.
         """
         if self.count==0:
-            self.cells
+            return self.cells
         
         return set()
 
