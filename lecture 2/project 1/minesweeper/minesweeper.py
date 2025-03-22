@@ -222,8 +222,10 @@ class MinesweeperAI():
 
         ini_ln = len(self.knowledge)
         new_sen = Sentence(self.valid_neibers(cell), count)
-        self.knowledge.append(new_sen)
         
+        # new_append = 0
+        append_flag = True
+        pop_list = []
         for i in range(ini_ln):# excluding last add
             sentence = self.knowledge[i]
             if len(new_sen.cells)>len(sentence.cells):
@@ -232,7 +234,18 @@ class MinesweeperAI():
                 set1, set2 = sentence.cells, new_sen.cells
             
             if set2.issubset(set1):
+                # new_append+=1
                 self.knowledge.append(Sentence(set1.difference(set2), abs(new_sen.count-sentence.count)))
+                if set1==new_sen.cells:
+                    append_flag=False
+                else:
+                    pop_list.append(i)
+        
+        if append_flag: self.knowledge.append(new_sen)
+        for i in pop_list:
+            self.knowledge.pop(i)
+
+        print("knowledge size", len(self.knowledge))
 
         for i in range(ini_ln, len(self.knowledge)):
             sentence = self.knowledge.pop(i)
