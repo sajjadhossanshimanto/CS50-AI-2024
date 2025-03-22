@@ -230,26 +230,26 @@ class MinesweeperAI():
         
         new_append = 0
         append_flag = True
-        # if not (new_sen.known_safes() or new_sen.known_mines()):
-        i=0
-        while i<len(self.knowledge):
-            sentence = self.knowledge.pop(i)
-            if len(new_sen.cells)>len(sentence.cells):
-                # set1, set2 = new_sen.cells, sentence.cells
-                if new_sen.issubset(sentence):
-                    self.knowledge.append(
-                        Sentence(new_sen - sentence, abs(new_sen.count - sentence.count))
-                    )
-                    append_flag = False
-                    i+=1
-                    new_append+=1
-            else:
-                # set1, set2 = sentence.cells, new_sen.cells
-                if sentence.issubset(new_sen):
-                    self.knowledge.append(
-                        Sentence(sentence - new_sen, abs(new_sen.count - sentence.count))
-                    )
-                    new_append+=1
+        if not (new_sen.known_safes() or new_sen.known_mines()):
+            i=0
+            while i<len(self.knowledge):
+                sentence = self.knowledge.pop(i)
+                if len(new_sen.cells)>len(sentence.cells):
+                    # set1, set2 = new_sen.cells, sentence.cells
+                    if new_sen.issubset(sentence):
+                        self.knowledge.append(
+                            Sentence(new_sen - sentence, abs(new_sen.count - sentence.count))
+                        )
+                        append_flag = False
+                        i+=1
+                        new_append+=1
+                else:
+                    # set1, set2 = sentence.cells, new_sen.cells
+                    if sentence.issubset(new_sen):
+                        self.knowledge.append(
+                            Sentence(sentence - new_sen, abs(new_sen.count - sentence.count))
+                        )
+                        new_append+=1
 
         if append_flag: 
             self.knowledge.append(new_sen)
