@@ -234,18 +234,18 @@ class MinesweeperAI():
         self.mark_safe(cell)
         self.moves_made.add(cell)
 
-        sen = Sentence(self.valid_neibers(cell), count)
+        new_sen = Sentence(self.valid_neibers(cell), count)
+        self.knowledge.append(new_sen)
         
-        for i in range(len(self.knowledge)):
+        for i in range(len(self.knowledge)-1):# excluding last add
             sentence = self.knowledge[i]
-            if len(sen.cells)>len(sentence.cells):
-                set1, set2 = sen.cells, sentence.cells
+            if len(new_sen.cells)>len(sentence.cells):
+                set1, set2 = new_sen.cells, sentence.cells
             else:
-                set1, set2 = sentence.cells, sen.cells
+                set1, set2 = sentence.cells, new_sen.cells
             
             if set2.issubset(set1):
-                self.knowledge.append(Sentence(set1.difference(set2), abs(sen.count-sentence.count)))
-        self.knowledge.append(sen)
+                self.knowledge.append(Sentence(set1.difference(set2), abs(new_sen.count-sentence.count)))
 
         for _ in range(len(self.knowledge)):
             sentence = self.knowledge.popleft()
@@ -253,7 +253,8 @@ class MinesweeperAI():
             self.mines.update(sentence.mines)
             if sentence.cells:
                 self.knowledge.append(sentence)
-        sen
+        
+        return
 
     def make_safe_move(self):
         """
