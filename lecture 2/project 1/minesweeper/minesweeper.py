@@ -225,25 +225,25 @@ class MinesweeperAI():
         
         # new_append = 0
         append_flag = True
-        pop_list = []
-        for i in range(ini_ln):# excluding last add
-            sentence = self.knowledge[i]
+        i=0
+        while i<ini_ln:
+            sentence = self.knowledge.pop(i)
             if len(new_sen.cells)>len(sentence.cells):
-                set1, set2 = new_sen.cells, sentence.cells
+                # set1, set2 = new_sen.cells, sentence.cells
+                if new_sen.issubclass(sentence):
+                    self.knowledge.append(
+                        Sentence(new_sen - sentence, abs(new_sen.count - sentence.count))
+                    )
+                    append_flag = False
+                    i+=1
             else:
-                set1, set2 = sentence.cells, new_sen.cells
-            
-            if set2.issubset(set1):
-                # new_append+=1
-                self.knowledge.append(Sentence(set1.difference(set2), abs(new_sen.count-sentence.count)))
-                if set1==new_sen.cells:
-                    append_flag=False
-                else:
-                    pop_list.append(i)
-        
+                # set1, set2 = sentence.cells, new_sen.cells
+                if sentence.issubclass(new_sen):
+                    self.knowledge.append(
+                        Sentence(sentence - new_sen, abs(new_sen.count - sentence.count))
+                    )
+
         if append_flag: self.knowledge.append(new_sen)
-        for i in pop_list:
-            self.knowledge.pop(i)
 
         print("knowledge size", len(self.knowledge))
 
