@@ -235,9 +235,13 @@ class MinesweeperAI():
                 self.knowledge.append(Sentence(set1.difference(set2), abs(new_sen.count-sentence.count)))
 
         for i in range(ini_ln, len(self.knowledge)):
-            sentence = self.knowledge[i]
-            self.safes.update(sentence.known_safes())
-            self.mines.update(sentence.known_mines())
+            sentence = self.knowledge.pop(i)
+            for c in sentence.known_safes():
+                if self.game.is_mine(c): breakpoint()
+                self.mark_safe(c)
+            for c in sentence.known_mines():
+                self.mark_mine(c)
+            self.knowledge.insert(i, sentence)
         
         return
 
