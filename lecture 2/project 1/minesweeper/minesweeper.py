@@ -350,7 +350,7 @@ class MinesweeperAI():
         """
         while 1:
             c = self.random_cell()
-            if c in self.mines and c in self.moves_made: 
+            if c in self.mines or c in self.moves_made: 
                 continue
 
             # should i mark c as moves made
