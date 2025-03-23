@@ -177,10 +177,16 @@ class MinesweeperAI():
         to mark that cell as a mine as well.
         """
         self.mines.add(cell)
-        for sentence in self.knowledge:
+        ptr = 0
+        while ptr<len(self.knowledge):
+            sentence = self.knowledge[ptr]
             sentence.mark_mine(cell)
+            
             if sentence.known_safes():
                 self.queue.append(sentence)
+                del self.knowledge[ptr]
+            else:
+                ptr+=1
 
     def mark_safe(self, cell):
         """
@@ -188,12 +194,17 @@ class MinesweeperAI():
         to mark that cell as safe as well.
         """
         self.safes.add(cell)
-        for sentence in self.knowledge:
+        ptr = 0
+        while ptr<len(self.knowledge):
+            sentence = self.knowledge[ptr]
             sentence.mark_safe(cell)
+            
             # adding safes can only lead to mines conclution
             if sentence.known_mines():
                 self.queue.append(sentence)
-
+                del self.knowledge[ptr]
+            else:
+                ptr+=1
 
     def valid_neibers(self, cell):
         i, j = cell
@@ -234,14 +245,15 @@ class MinesweeperAI():
         #         self.knowledge.pop(ptr)
         #     ptr-=1
 
-        # forward tracking
-        ptr = 0
-        while ptr<len(self.knowledge):
-            if not self.knowledge[ptr].cells:
-                self.knowledge.pop(ptr)
-            else:
-                ptr+=1
+        # # forward tracking
+        # ptr = 0
+        # while ptr<len(self.knowledge):
+        #     if not self.knowledge[ptr].cells:
+        #         self.knowledge.pop(ptr)
+        #     else:
+        #         ptr+=1
 
+        "no need for cleanup checks if already poped befor queuing"
 
     def add_knowledge(self, cell, count):
         """
