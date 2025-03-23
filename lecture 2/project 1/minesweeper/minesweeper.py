@@ -275,48 +275,43 @@ class MinesweeperAI():
 
         new_sen = Sentence(self.valid_neibers(cell), count)
         
-        new_append = 0
+        if new_sen.known_mines() or new_sen.known_safes():
+            self.mark_sentence(new_sen)
+            return
+        # else:
+            # inference checking
+
+
         append_flag = True
-        if not (new_sen.known_safes() or new_sen.known_mines()):
-            i=0
-            while i<len(self.knowledge):
-                sentence = self.knowledge.pop(i)
-                if len(new_sen.cells)>len(sentence.cells):
-                    # set1, set2 = new_sen.cells, sentence.cells
-                    if new_sen.issubset(sentence):
-                        self.knowledge.append(
-                            Sentence(new_sen - sentence, abs(new_sen.count - sentence.count))
-                        )
-                        append_flag = False
-                        i+=1
-                        new_append+=1
+        ini_ln = len(self.knowledge)
+        ptr=0
+        while ptr<ini_ln:
+            sentence = self.knowledge[ptr]
+            if len(new_sen.cells)>len(sentence.cells):
+                ptr+=1 # not removing the current sendtence from knowledge
+                if sentence.issubset(new_sen):
+                    append_flag = False
+                    inference = Sentence(new_sen - sentence, abs(new_sen.count - sentence.count))
+                    if not (inference.known_safes() or inference.known_mines()):
+                        self.knowledge.append(inference)
+                    else:
+                        self.mark_sentence(inference)
+                
+            else:# new_sen is smaller
+                if new_sen.issubset(sentence):
+                    inference = Sentence(sentence - new_sen, abs(new_sen.count - sentence.count))
+                    self.knowledge.pop(ptr)
+                    if not (inference.known_safes() or inference.known_mines()):
+                        self.knowledge.append(inference)
+                    else:
+                        self.mark_sentence(inference)
                 else:
-                    # set1, set2 = sentence.cells, new_sen.cells
-                    if sentence.issubset(new_sen):
-                        self.knowledge.append(
-                            Sentence(sentence - new_sen, abs(new_sen.count - sentence.count))
-                        )
-                        new_append+=1
+                    ptr+=1 # only in case not poped
 
         if append_flag: 
             self.knowledge.append(new_sen)
             new_append+=1
-        # print("knowledge size", len(self.knowledge))
-
-        i=len(self.knowledge)-new_append
-        while i<len(self.knowledge):
-            sentence = self.knowledge.pop(i)
-            for c in sentence.known_safes():
-                if self.game.is_mine(c): breakpoint()
-                self.mark_safe(c)
-            for c in sentence.known_mines():
-                self.mark_mine(c)
-            
-            if not (sentence.known_safes() or sentence.known_mines()):
-                self.knowledge.insert(i, sentence)
-                i+=1
-        
-        return
+        print("knowledge size", len(self.knowledge))
 
     def make_safe_move(self):
         """
