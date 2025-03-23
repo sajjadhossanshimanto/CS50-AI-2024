@@ -169,6 +169,7 @@ class MinesweeperAI():
 
         # List of sentences about the game known to be true
         self.knowledge = []
+        self.queue = deque()
 
     def mark_mine(self, cell):
         """
@@ -178,6 +179,8 @@ class MinesweeperAI():
         self.mines.add(cell)
         for sentence in self.knowledge:
             sentence.mark_mine(cell)
+            if sentence.known_safes():
+                self.queue.append(sentence)
 
     def mark_safe(self, cell):
         """
@@ -187,6 +190,10 @@ class MinesweeperAI():
         self.safes.add(cell)
         for sentence in self.knowledge:
             sentence.mark_safe(cell)
+            # adding safes can only lead to mines conclution
+            if sentence.known_mines():
+                self.queue.append(sentence)
+
 
     def valid_neibers(self, cell):
         i, j = cell
@@ -208,11 +215,33 @@ class MinesweeperAI():
         return neibers
 
     def mark_sentence(self, sentence):
-        for c in sentence.known_safes():
-            if self.game.is_mine(c): breakpoint()
-            self.mark_safe(c)
-        for c in sentence.known_mines():
-            self.mark_mine(c)
+        # WARNING: make sure the sentence of cell is not in knowledge list
+        self.queue.append(sentence)
+        while self.queue:
+            sentence = self.queue.popleft()
+            for c in sentence.known_safes():
+                if self.game.is_mine(c): breakpoint()
+                self.mark_safe(c)
+            for c in sentence.known_mines():
+                self.mark_mine(c)
+        
+        # clearup checks
+        
+        # # reverse tracking
+        # ptr = len(self.knowledge)-1
+        # while ptr>=0:
+        #     if not self.knowledge[ptr].cells:
+        #         self.knowledge.pop(ptr)
+        #     ptr-=1
+
+        # forward tracking
+        ptr = 0
+        while ptr<len(self.knowledge):
+            if not self.knowledge[ptr].cells:
+                self.knowledge.pop(ptr)
+            else:
+                ptr+=1
+
 
     def add_knowledge(self, cell, count):
         """
