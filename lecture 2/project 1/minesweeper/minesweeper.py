@@ -282,7 +282,8 @@ class MinesweeperAI():
         self.moves_made.add(cell)
 
         new_sen = Sentence(self.valid_neibers(cell), count)
-        
+        if not new_sen.cells: return 
+
         if new_sen.known_mines() or new_sen.known_safes():
             self.mark_sentence(new_sen)
             return
