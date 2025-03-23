@@ -3,6 +3,8 @@ import random
 from collections import deque
 
 
+random.seed("1234")
+
 class Minesweeper():
     """
     Minesweeper game representation
