@@ -109,7 +109,7 @@ class Sentence():
         """
         Returns the set of all cells in self.cells known to be mines.
         """
-        if self.count==len(self.cells):
+        if self.count>=len(self.cells):
             return self.cells
 
         return set()
@@ -226,8 +226,13 @@ class MinesweeperAI():
             ):
                 continue
 
+            # if (i, j) in self.mines:
+            #     count-=1
+            #     continue
+        
             neibers.append((i, j))
         
+        # return neibers, count
         return neibers
 
     def mark_sentence(self, sentence):
