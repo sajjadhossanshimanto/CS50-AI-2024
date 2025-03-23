@@ -207,6 +207,12 @@ class MinesweeperAI():
         
         return neibers
 
+    def mark_sentence(self, sentence):
+        for c in sentence.known_safes():
+            if self.game.is_mine(c): breakpoint()
+            self.mark_safe(c)
+        for c in sentence.known_mines():
+            self.mark_mine(c)
 
     def add_knowledge(self, cell, count):
         """
