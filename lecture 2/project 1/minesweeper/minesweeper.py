@@ -174,7 +174,7 @@ class MinesweeperAI():
 
         # List of sentences about the game known to be true
         self.knowledge = []
-        self.queue = deque()
+        # self.queue = deque()
 
     def mark_mine(self, cell):
         """
@@ -188,8 +188,8 @@ class MinesweeperAI():
             sentence.mark_mine(cell)
             
             if sentence.known_safes():
-                self.queue.append(sentence)
-                del self.knowledge[ptr]
+                # if (3, 2) in sentence.cells: breakpoint()
+                self.mark_sentence(self.knowledge.pop(ptr))
             else:
                 ptr+=1
 
@@ -206,8 +206,8 @@ class MinesweeperAI():
             
             # adding safes can only lead to mines conclution
             if sentence.known_mines():
-                self.queue.append(sentence)
-                del self.knowledge[ptr]
+                # if (3, 2) in sentence.cells: breakpoint()
+                self.mark_sentence(self.knowledge.pop(ptr))
             else:
                 ptr+=1
 
@@ -237,14 +237,12 @@ class MinesweeperAI():
 
     def mark_sentence(self, sentence):
         # WARNING: make sure the sentence of cell is not in knowledge list
-        self.queue.append(sentence)
-        while self.queue:
-            sentence = self.queue.popleft()
-            for c in sentence.known_safes():
-                if self.game.is_mine(c): breakpoint()
-                self.mark_safe(c)
-            for c in sentence.known_mines():
-                self.mark_mine(c)
+
+        for c in sentence.known_safes():
+            if self.game.is_mine(c): breakpoint()
+            self.mark_safe(c)
+        for c in sentence.known_mines():
+            self.mark_mine(c)
         
         # clearup checks
         
