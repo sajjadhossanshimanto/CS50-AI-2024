@@ -149,6 +149,9 @@ class Sentence():
 
     def __sub__(self, other):
         return self.cells - other.cells
+    
+    def __repr__(self):
+        return f"{self.cells} = {self.count}"
 
 class MinesweeperAI():
     """
