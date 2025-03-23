@@ -310,6 +310,7 @@ class MinesweeperAI():
                 if new_sen.issubset(sentence):
                     inference = Sentence(sentence - new_sen, abs(new_sen.count - sentence.count))
                     self.knowledge.pop(ptr)
+                    ini_ln-=1
                     if not (inference.known_safes() or inference.known_mines()):
                         self.knowledge.append(inference)
                     else:
@@ -319,7 +320,7 @@ class MinesweeperAI():
 
         if append_flag: 
             self.knowledge.append(new_sen)
-            new_append+=1
+
         print("knowledge size", len(self.knowledge))
 
     def make_safe_move(self):
