@@ -363,6 +363,7 @@ class MinesweeperAI():
             1) have not already been chosen, and
             2) are not known to be mines
         """
+        if len(self.mines)==8: return # end of the game. then there is no random move possible
         while 1:
             c = self.random_cell()
             if c in self.mines or c in self.moves_made: 
