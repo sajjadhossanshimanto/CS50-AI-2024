@@ -266,7 +266,7 @@ class MinesweeperAI():
     def debug_check_inferance(self, sentence):
         "function for ditecting wrong sentence"
         mine = 0
-        for c in sentence:
+        for c in sentence.cells:
             if self.game.is_mine(c):
                 mine += 1
 
@@ -277,7 +277,7 @@ class MinesweeperAI():
 
     def add_to_knowledge(self, sentence):
         self.debug_check_inferance(sentence)
-        
+
         if not (sentence.known_safes() or sentence.known_mines()):
             self.knowledge.append(sentence)
             return True
@@ -306,7 +306,7 @@ class MinesweeperAI():
         new_sen = Sentence(self.valid_neibers(cell), count)
         if not new_sen.cells: return 
 
-        if self.add_to_knowledge(new_sen):
+        if not self.add_to_knowledge(new_sen):
             return
         # else:
             # inference checking
