@@ -97,7 +97,6 @@ class Sentence():
         self.cells = set(cells)
         self.count = count
 
-
     def __eq__(self, other):
         return self.cells == other.cells and self.count == other.count
 
@@ -108,7 +107,7 @@ class Sentence():
         """
         Returns the set of all cells in self.cells known to be mines.
         """
-        if self.count>=len(self.cells):
+        if self.count >= len(self.cells):
             return self.cells
 
         return set()
@@ -117,9 +116,9 @@ class Sentence():
         """
         Returns the set of all cells in self.cells known to be safe.
         """
-        if self.count==0:
+        if self.count == 0:
             return self.cells
-        
+
         return set()
 
     def mark_mine(self, cell):
@@ -127,17 +126,19 @@ class Sentence():
         Updates internal knowledge representation given the fact that
         a cell is known to be a mine.
         """
-        if cell not in self.cells: return
+        if cell not in self.cells:
+            return
 
         self.cells.remove(cell)
-        self.count-=1
+        self.count -= 1
 
     def mark_safe(self, cell):
         """
         Updates internal knowledge representation given the fact that
         a cell is known to be safe.
         """
-        if cell not in self.cells: return
+        if cell not in self.cells:
+            return
 
         self.cells.remove(cell)
         # self.count-=1
@@ -148,9 +149,10 @@ class Sentence():
 
     def __sub__(self, other):
         return self.cells - other.cells
-    
+
     def __repr__(self):
         return f"{self.cells} = {self.count}"
+
 
 class MinesweeperAI():
     """
@@ -181,14 +183,14 @@ class MinesweeperAI():
         """
         self.mines.add(cell)
         ptr = 0
-        while ptr<len(self.knowledge):
+        while ptr < len(self.knowledge):
             sentence = self.knowledge[ptr]
             sentence.mark_mine(cell)
-            
+
             if sentence.known_safes():
                 self.mark_sentence(self.knowledge.pop(ptr))
             else:
-                ptr+=1
+                ptr += 1
 
     def mark_safe(self, cell):
         """
@@ -197,37 +199,37 @@ class MinesweeperAI():
         """
         self.safes.add(cell)
         ptr = 0
-        while ptr<len(self.knowledge):
+        while ptr < len(self.knowledge):
             sentence = self.knowledge[ptr]
             sentence.mark_safe(cell)
-            
+
             # adding safes can only lead to mines conclution
             if sentence.known_mines():
                 self.mark_sentence(self.knowledge.pop(ptr))
             else:
-                ptr+=1
+                ptr += 1
 
     def neiber_sentence(self, cell, count):
         i, j = cell
         neibers = []
         for i, j in [
-            (i, j+1), (i, j-1),# left, right
-            (i+1, j), (i-1, j),# up, down
-            (i-1, j+1), (i-1, j-1),# uppner diogonals
-            (i+1, j+1), (i+1, j-1)# loweer diogonals
+            (i, j+1), (i, j-1),  # left, right
+            (i+1, j), (i-1, j),  # up, down
+            (i-1, j+1), (i-1, j-1),  # uppner diogonals
+            (i+1, j+1), (i+1, j-1)  # loweer diogonals
         ]:
             if (
-                i<0 or j<0 or i>=self.height or j>=self.width or
+                i < 0 or j < 0 or i >= self.height or j >= self.width or
                 (i, j) in self.moves_made or (i, j) in self.safes
             ):
                 continue
 
             if (i, j) in self.mines:
-                count-=1
+                count -= 1
                 continue
-        
+
             neibers.append((i, j))
-        
+
         return Sentence(neibers, count)
 
     def mark_sentence(self, sentence):
@@ -238,7 +240,6 @@ class MinesweeperAI():
         for c in sentence.known_mines():
             self.mark_mine(c)
 
-
     def debug_check_inferance(self, sentence):
         "function for ditecting wrong sentence"
         mine = 0
@@ -246,9 +247,9 @@ class MinesweeperAI():
             if self.game.is_mine(c):
                 mine += 1
 
-        if mine!=sentence.count:
+        if mine != sentence.count:
             breakpoint()
-        
+
         return
 
     def add_to_knowledge(self, sentence):
@@ -257,7 +258,7 @@ class MinesweeperAI():
         if not (sentence.known_safes() or sentence.known_mines()):
             self.knowledge.append(sentence)
             return True
-        
+
         self.mark_sentence(sentence)
         return False
 
@@ -280,45 +281,47 @@ class MinesweeperAI():
         self.moves_made.add(cell)
 
         new_sen = self.neiber_sentence(cell, count)
-        if not new_sen.cells: return 
+        if not new_sen.cells:
+            return
 
         if not self.add_to_knowledge(new_sen):
             return
         # else:
             # inference checking
 
-
         append_flag = True
         ini_ln = len(self.knowledge)
-        ptr=0
-        while ptr<ini_ln:
+        ptr = 0
+        while ptr < ini_ln:
             sentence = self.knowledge[ptr]
-            if len(new_sen.cells)>len(sentence.cells):
-                ptr+=1 # not removing the current sendtence from knowledge
+            if len(new_sen.cells) > len(sentence.cells):
+                ptr += 1  # not removing the current sendtence from knowledge
                 if sentence.issubset(new_sen):
                     append_flag = False
-                    inference = Sentence(new_sen - sentence, abs(new_sen.count - sentence.count))
+                    inference = Sentence(
+                        new_sen - sentence, abs(new_sen.count - sentence.count))
                     self.add_to_knowledge(inference)
 
-            else:# new_sen is smaller
-                # if sentence.known_safes() or sentence.known_mines(): 
+            else:  # new_sen is smaller
+                # if sentence.known_safes() or sentence.known_mines():
                 #     breakpoint() # extream case this should not happen
                 #     self.mark_sentence(sentence)
                 #     del self.knowledge[ptr]
                 #     continue
 
                 if new_sen.issubset(sentence):
-                    inference = Sentence(sentence - new_sen, abs(new_sen.count - sentence.count))
+                    inference = Sentence(
+                        sentence - new_sen, abs(new_sen.count - sentence.count))
                     self.knowledge.pop(ptr)
-                    ini_ln-=1
+                    ini_ln -= 1
                     self.add_to_knowledge(inference)
                 else:
-                    ptr+=1 # only in case not poped
+                    ptr += 1  # only in case not poped
 
-        if append_flag: 
+        if append_flag:
             self.knowledge.append(new_sen)
 
-        print("knowledge size", len(self.knowledge))
+        print("knowledge size", len(self.knowledge))  # do i need to remove it
 
     def make_safe_move(self):
         """
@@ -345,13 +348,12 @@ class MinesweeperAI():
             1) have not already been chosen, and
             2) are not known to be mines
         """
-        if len(self.mines)==8: return # end of the game. then there is no random move possible
+        if len(self.mines) == 8:
+            return  # end of the game. then there is no random move possible
         while 1:
             c = self.random_cell()
-            if c in self.mines or c in self.moves_made: 
+            if c in self.mines or c in self.moves_made:
                 continue
 
             # should i mark c as moves made
             return c
-
-
