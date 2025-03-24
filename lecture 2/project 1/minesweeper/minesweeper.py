@@ -1,9 +1,8 @@
 import itertools
 import random
-from collections import deque
 
 
-random.seed("1234")
+# random.seed("1234")
 
 class Minesweeper():
     """
@@ -174,7 +173,6 @@ class MinesweeperAI():
 
         # List of sentences about the game known to be true
         self.knowledge = []
-        # self.queue = deque()
 
     def mark_mine(self, cell):
         """
@@ -188,7 +186,6 @@ class MinesweeperAI():
             sentence.mark_mine(cell)
             
             if sentence.known_safes():
-                # if (3, 2) in sentence.cells: breakpoint()
                 self.mark_sentence(self.knowledge.pop(ptr))
             else:
                 ptr+=1
@@ -206,7 +203,6 @@ class MinesweeperAI():
             
             # adding safes can only lead to mines conclution
             if sentence.known_mines():
-                # if (3, 2) in sentence.cells: breakpoint()
                 self.mark_sentence(self.knowledge.pop(ptr))
             else:
                 ptr+=1
@@ -233,35 +229,15 @@ class MinesweeperAI():
             neibers.append((i, j))
         
         return Sentence(neibers, count)
-        return neibers
 
     def mark_sentence(self, sentence):
         # WARNING: make sure the sentence of cell is not in knowledge list
 
         for c in sentence.known_safes():
-            if self.game.is_mine(c): breakpoint()
             self.mark_safe(c)
         for c in sentence.known_mines():
             self.mark_mine(c)
-        
-        # clearup checks
-        
-        # # reverse tracking
-        # ptr = len(self.knowledge)-1
-        # while ptr>=0:
-        #     if not self.knowledge[ptr].cells:
-        #         self.knowledge.pop(ptr)
-        #     ptr-=1
 
-        # # forward tracking
-        # ptr = 0
-        # while ptr<len(self.knowledge):
-        #     if not self.knowledge[ptr].cells:
-        #         self.knowledge.pop(ptr)
-        #     else:
-        #         ptr+=1
-
-        "no need for cleanup checks if already poped befor queuing"
 
     def debug_check_inferance(self, sentence):
         "function for ditecting wrong sentence"
@@ -276,7 +252,7 @@ class MinesweeperAI():
         return
 
     def add_to_knowledge(self, sentence):
-        self.debug_check_inferance(sentence)
+        # self.debug_check_inferance(sentence)
 
         if not (sentence.known_safes() or sentence.known_mines()):
             self.knowledge.append(sentence)
@@ -325,11 +301,11 @@ class MinesweeperAI():
                     self.add_to_knowledge(inference)
 
             else:# new_sen is smaller
-                if sentence.known_safes() or sentence.known_mines(): 
-                    breakpoint() # extream case this should not happen
-                    self.mark_sentence(sentence)
-                    del self.knowledge[ptr]
-                    continue
+                # if sentence.known_safes() or sentence.known_mines(): 
+                #     breakpoint() # extream case this should not happen
+                #     self.mark_sentence(sentence)
+                #     del self.knowledge[ptr]
+                #     continue
 
                 if new_sen.issubset(sentence):
                     inference = Sentence(sentence - new_sen, abs(new_sen.count - sentence.count))
