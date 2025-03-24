@@ -58,10 +58,10 @@ knowledge3 = And(
     # a says
     Implication(AKnight, And(Or(AKnight, AKnave))),
     Implication(AKnave, Not(And(Or(AKnight, AKnave)))),
-    
+
     # b says
     Or(Implication(BKnight, Or(Implication(AKnight, AKnave), Implication(AKnave, Not(AKnave)))),
-    Implication(BKnave, Not(Or(Implication(AKnight, AKnave), Implication(AKnave, Not(AKnave))))),),
+       Implication(BKnave, Not(Or(Implication(AKnight, AKnave), Implication(AKnave, Not(AKnave))))),),
     # Implication(BKnave, Not(BKnave)),
 
     # b says
