@@ -263,7 +263,21 @@ class MinesweeperAI():
 
         "no need for cleanup checks if already poped befor queuing"
 
+    def debug_check_inferance(self, sentence):
+        "function for ditecting wrong sentence"
+        mine = 0
+        for c in sentence:
+            if self.game.is_mine(c):
+                mine += 1
+
+        if mine!=sentence.count:
+            breakpoint()
+        
+        return
+
     def add_to_knowledge(self, sentence):
+        self.debug_check_inferance(sentence)
+        
         if not (sentence.known_safes() or sentence.known_mines()):
             self.knowledge.append(sentence)
             return True
