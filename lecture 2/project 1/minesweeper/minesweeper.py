@@ -263,6 +263,14 @@ class MinesweeperAI():
 
         "no need for cleanup checks if already poped befor queuing"
 
+    def add_to_knowledge(self, sentence):
+        if not (sentence.known_safes() or sentence.known_mines()):
+            self.knowledge.append(sentence)
+            return True
+        
+        self.mark_sentence(sentence)
+        return False
+
     def add_knowledge(self, cell, count):
         """
         Called when the Minesweeper board tells us, for a given
@@ -284,8 +292,7 @@ class MinesweeperAI():
         new_sen = Sentence(self.valid_neibers(cell), count)
         if not new_sen.cells: return 
 
-        if new_sen.known_mines() or new_sen.known_safes():
-            self.mark_sentence(new_sen)
+        if self.add_to_knowledge(new_sen):
             return
         # else:
             # inference checking
@@ -301,20 +308,14 @@ class MinesweeperAI():
                 if sentence.issubset(new_sen):
                     append_flag = False
                     inference = Sentence(new_sen - sentence, abs(new_sen.count - sentence.count))
-                    if not (inference.known_safes() or inference.known_mines()):
-                        self.knowledge.append(inference)
-                    else:
-                        self.mark_sentence(inference)
-                
+                    self.add_to_knowledge(inference)
+
             else:# new_sen is smaller
                 if new_sen.issubset(sentence):
                     inference = Sentence(sentence - new_sen, abs(new_sen.count - sentence.count))
                     self.knowledge.pop(ptr)
                     ini_ln-=1
-                    if not (inference.known_safes() or inference.known_mines()):
-                        self.knowledge.append(inference)
-                    else:
-                        self.mark_sentence(inference)
+                    self.add_to_knowledge(inference)
                 else:
                     ptr+=1 # only in case not poped
 
