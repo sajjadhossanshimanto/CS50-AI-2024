@@ -1,14 +1,16 @@
 from logic import *
 
-rain = Symbol("rain")
-hagrid = Symbol("hagrid")
-dumbledore = Symbol("dumbledore")
+rain = Symbol("rain")# it is rainning
+hagrid = Symbol("hagrid")# harry visit hagrid
+dumbledore = Symbol("dumbledore")# harry visit dumbledore
 
 knowledge = And(
-    Implication(Not(rain), hagrid),
-    Or(hagrid, dumbledore),
-    Not(And(hagrid, dumbledore)),
-    dumbledore
+    Implication(Not(rain), hagrid),# if it is not rains, then harry will visit hagrid
+    Or(hagrid, dumbledore),# harry will visit hagrid or dumledore
+    Not(And(hagrid, dumbledore)),# but not both
+    dumbledore# harry viisted dumleedore
 )
 
-print(model_check(knowledge, rain))
+# print(model_check(knowledge, rain))
+# print(Not(And(hagrid, dumbledore)).parenthesize())
+print(knowledge.formula())
