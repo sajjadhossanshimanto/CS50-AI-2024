@@ -211,7 +211,7 @@ class MinesweeperAI():
             else:
                 ptr+=1
 
-    def valid_neibers(self, cell):
+    def neiber_sentence(self, cell, count):
         i, j = cell
         neibers = []
         for i, j in [
@@ -222,17 +222,17 @@ class MinesweeperAI():
         ]:
             if (
                 i<0 or j<0 or i>=self.height or j>=self.width or
-                (i, j) in self.moves_made or (i, j) in self.safes or (i, j) in self.mines
+                (i, j) in self.moves_made or (i, j) in self.safes
             ):
                 continue
 
-            # if (i, j) in self.mines:
-            #     count-=1
-            #     continue
+            if (i, j) in self.mines:
+                count-=1
+                continue
         
             neibers.append((i, j))
         
-        # return neibers, count
+        return Sentence(neibers, count)
         return neibers
 
     def mark_sentence(self, sentence):
@@ -303,7 +303,7 @@ class MinesweeperAI():
         self.mark_safe(cell)
         self.moves_made.add(cell)
 
-        new_sen = Sentence(self.valid_neibers(cell), count)
+        new_sen = self.neiber_sentence(cell, count)
         if not new_sen.cells: return 
 
         if not self.add_to_knowledge(new_sen):
