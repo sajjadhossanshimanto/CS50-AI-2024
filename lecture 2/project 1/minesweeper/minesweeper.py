@@ -325,6 +325,12 @@ class MinesweeperAI():
                     self.add_to_knowledge(inference)
 
             else:# new_sen is smaller
+                if sentence.known_safes() or sentence.known_mines(): 
+                    breakpoint() # extream case this should not happen
+                    self.mark_sentence(sentence)
+                    del self.knowledge[ptr]
+                    continue
+
                 if new_sen.issubset(sentence):
                     inference = Sentence(sentence - new_sen, abs(new_sen.count - sentence.count))
                     self.knowledge.pop(ptr)
